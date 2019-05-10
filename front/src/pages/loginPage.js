@@ -6,7 +6,7 @@ import logo from '../logo.svg'
 class LoginPage extends React.Component {
     constructor(props) {
         super(props)
-    }
+    } 
 render() {
     const { alert, history } = this.props
     return (
