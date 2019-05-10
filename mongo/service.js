@@ -1,8 +1,8 @@
 const mongoose = require('mongoose')
 
 const bcrypt = require('bcryptjs')
-const jwt = require('jsonwebtoken');
-
+const jwt = require('jsonwebtoken')
+const config = process.env.JWT_SECRET
 const {User} = require('./index')
 
 module.exports = {
@@ -15,34 +15,38 @@ module.exports = {
 }
 
 async function create(param) {
-    if (await User.findOne({ email: param.email })) {
+  try {
+    if (await User.findOne({ username: param.username })) {
       console.log('found!');
       throw 'user found'
     } else {
       const user = new User(param)
-      user.pass = await bcrypt.pass(param.pass, 10);
+      user.hash = await bcrypt.hash(param.password, 10);
       await user.save();
     }
+  } catch (err) {
+    console.log('error creating user')
+    throw err
+  }
+
 }
-async function findUser(param) {
-  const user = await User.findOne({ email: param.email }
-}
+
 
 
 async function authenticate(param) {
   try {
-    const user = await User.findOne({ email: param.email })
+    const user = await User.findOne({ username: param.username })
     if (!user) throw 'not found'
-    if (user && await bcrypt.compare(param.pass, user.pass)) {
-      const { pass, ...userWithoutPass } = user.toObject();
+    if (user && await bcrypt.compare(param.password, user.password)) {
+      const { password, ...userWithoutpassword } = user.toObject();
       const token = await jwt.sign({ sub: user.id }, config.JWT_SECRET);
       console.log(token);
-      return { ...userWithoutPass, token: await token}
+      return { ...userWithoutpassword, token: await token}
     }
   }
   catch (err) {
-    console.log(err);
-    throw err;
+    console.log('error authenticating user');
+    throw err
   }
 }
 
@@ -52,17 +56,18 @@ async function update(param, id) {
   try {
     const user = await User.findById(id);
     if (!user) throw 'User does not exist'
-    const queriedUser = await User.findOne({ email: param.email })
-    //if current email is not new parameter and queried user exists
-    if (user.email !== param.email && queriedUser) throw new Error('email taken')
-    //if password, pass it
-    if (param.pass) {
-      param.pass = await bcrypt.pass(param.pass, 10);
+    const queriedUser = await User.findOne({ username: param.username })
+    if (user.username !== param.username && queriedUser) throw 'username taken'
+    if (param.password) {
+      const hash = await bcrypt.hash(param.password, 10);
     }
-    Object.assign(user, param)
+    Object.assign(user, {
+      hash: hash,
+      username: param.username
+    })
     await user.save();
   } catch (err) {
-    console.log(err);
+    console.log('error updating user')
     throw err
   }
 }
@@ -73,12 +78,12 @@ async function del(id) {
 
 
 async function getById(id) {
-  const user = await User.findById(id).select('-pass');
+  const user = await User.findById(id).select('-password');
   return user
 }
 
 async function getAll() {
-  const users = await User.find().select('-pass');
+  const users = await User.find().select('-password');
   console.log(users);
   return users
 }

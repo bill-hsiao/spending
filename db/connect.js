@@ -1,5 +1,4 @@
 const mongoose = require('mongoose')
-
 const uri = `mongodb://${process.env.DB_USER}:${process.env.DB_PASS}@${process.env.DB_URI}`
 
 async function connect() {
@@ -8,7 +7,7 @@ async function connect() {
     console.log('connected to mlab');
     return connection
   } else {
-    throw 'connection failed'
+    throw 'e'
   }
 }
 

@@ -1,20 +1,19 @@
 const Koa = require('koa')
-const Router = require('koa-router')
 const Logger = require('koa-logger')
-
-const app = new Koa()
-
 const Cors = require('@koa/cors')
 const BodyParser = require('koa-bodyparser')
 const Helmet = require('koa-helmet')
-const respond = require('koa-respond')
+const Router = require('koa-router')
+const Respond = require('koa-respond')
 
-
-const user = require('./user.js')
+const app = new Koa()
+const router = new Router()
 
 
 app.use(Logger())
 app.use(Cors())
+app.use(Helmet())
+
 app.use(BodyParser({
   enableTypes: ['json'],
   jsonLimit: '5mb',
@@ -23,25 +22,11 @@ app.use(BodyParser({
     ctx.throw('body parse error', 422)
   }
 }))
-app.use(Helmet())
 
+app.use(Respond())
 
-app.use(respond())
-
-const router = new Router({
-  prefix: '/api'
-})
-//
-// router.get('/:semester', async (ctx) => {
-//   console.log(ctx.params.semester);
-//     try {
-//       let data = fs.readFileSync(`./public/${ctx.params.semester}.json`, 'utf8')
-//       ctx.body = JSON.parse(data);
-//     } catch (err) {
-//
-//     }
-// })
-app.use(router.routes()).use(router.allowedMethods());
-
+require('./mongo/routes')(router)
+app.use(router.routes())
+app.use(router.allowedMethods())
 
 module.exports = app

@@ -1,12 +1,13 @@
 const mongoose = require('mongoose')
-require('./db/connect')
-
-// const bcrypt = require('bcryptjs')
 const Schema = mongoose.Schema
+require('../db/connect')
 
 const User = new Schema({
-  email: { type: String, unique: true, required: true },
-  pass: { type: String, required: true },
+  username: { type: String, unique: true, required: true },
+  hash: { type: String, required: true },
+  firstName: {type: String, required: true },
+  lastName: {type: String, required: true },
+  createdDate: { type: Date, default: Date.now },
   expenses: [{ type: Schema.Types.ObjectId, ref: 'Expense' }]
 })
 
@@ -16,19 +17,25 @@ const Expense = Schema({
   amount: Number,
   description: String
 });
-//
+
+User.set('toJSON', { virtuals: true });
+
+User.pre('save', function(next) {
+  console.log('before save');
+  next();
+});
 // User.pre('save', async function() {
 //   console.log('pre-save hook');
-//   await hashPass(this.pass)
+//   await hashpassword(this.password)
 // });
 //
-// async function hashPass(pass) {
+// async function hashpassword(password) {
 //   console.log('bcrypt middleware');
-//   return await bcrypt.hash(pass, 10);
+//   return await bcrypt.hash(password, 10);
 // }
 
 
 module.exports = {
   User: mongoose.model('User', User),
-  Expense: mongoose.model('Expense', Expense)
+  // Expense: mongoose.model('Expense', Expense)
 }
