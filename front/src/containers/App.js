@@ -2,18 +2,15 @@ import React from 'react'
 
 import { Router, Route } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { createBrowserHistory } from 'history'
+import { history } from '../bin/history'
 import { 
   alertSuccess, 
   alertError, 
   alertClear 
 } from '../redux/actions'
-import { LoginPage } from '../pages/loginPage'
 
-import logo from '../logo.svg'
-
-
-// import { consoleLog } from './../redux/actions'
+import Register from '../pages/register'
+import Login from '../pages/login'
 
 import './App.css'
 
@@ -21,8 +18,10 @@ class App extends React.Component {
   constructor(props) {
     super(props)
 
-    // this.history = createBrowserHistory()
-    
+    const { dispatch } = this.props;
+    history.listen((location, action) => {
+        // clear alert on location change
+    });
 
   }
   // componentDidMount() {
@@ -33,40 +32,31 @@ class App extends React.Component {
 
   // }
   render() {
-    const { alert, history } = this.props
+    const { history } = this.props;
     return (
-      <div class="jumbotron">
+    <div className="jumbotron">
+        <div className="App">
+        <h1>Pocket Budget</h1>
+  
 
 
-<Router history={history}>
-                            <div>
-                                <Route path="" component={LoginPage} />
-                            </div>
-                        </Router>
+
+        <Router history={history}>
+          <div>
+          <Route path="/login" component={Login} />
+
+          <Route path="/register" component={Register} />
+
+
+
+            </div>
+        </Router>
+        </div>
         </div>
     )
   }
 }
-//   render() {
-//     return (
-//       <div className="App">
-//         <header className="App-header">
-//           <p>
-//             Edit <code>src/App.js</code> and save to reload.
-//           </p>
-//           <a
-//             className="App-link"
-//             href="https://reactjs.org"
-//             target="_blank"
-//             rel="noopener noreferrer"
-//           >
-//             Learn React
-//           </a>
-//         </header>
-//       </div>
-//     );
-//   }
-// }
+
 function mapStateToProps(state) {
   const { init } = state
   return {

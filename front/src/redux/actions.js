@@ -1,14 +1,17 @@
+import fetch from 'cross-fetch'
+import { history } from '../bin/history'
+
 export const ALERT_SUCCESS = 'ALERT_SUCCESS'
 export const ALERT_ERROR = 'ALERT_ERROR'
 export const ALERT_CLEAR = 'ALERT_CLEAR'
 
-export const USERS_REGISTER_BEGIN = 'USERS_REGISTER_BEGIN'
-export const USERS_REGISTER_SUCCESS = 'USERS_REGISTER_SUCCESS'
-export const USERS_REGISTER_FAILURE = 'USERS_REGISTER_FAILURE'
+export const SIGNUP_BEGIN = 'SIGNUP_BEGIN'
+export const SIGNUP_SUCCESS = 'SIGNUP_SUCCESS'
+export const SIGNUP_FAIL = 'SIGNUP_FAIL'
 
-export const USERS_LOGIN_BEGIN = 'USERS_LOGIN_BEGIN'
-export const USERS_LOGIN_SUCCESS = 'USERS_LOGIN_SUCCESS'
-export const USERS_LOGIN_FAILURE = 'USERS_LOGIN_FAILURE'
+export const LOGIN_BEGIN = 'LOGIN_BEGIN'
+export const LOGIN_SUCCESS = 'LOGIN_SUCCESS'
+export const LOGIN_FAIL = 'LOGIN_FAIL'
 
 export const USERS_LOGOUT = 'USERS_LOGOUT'
 
@@ -19,6 +22,85 @@ export const USERS_GETALL_FAILURE = 'USERS_GETALL_FAILURE'
 export const USERS_DELETE_BEGIN = 'USERS_DELETE_BEGIN'
 export const USERS_DELETE_SUCCESS = 'USERS_DELETE_SUCCESS'
 export const USERS_DELETE_FAILURE = 'USERS_DELETE_FAILURE'
+
+export const signUpBegin = user => {
+  return {
+    type: SIGNUP_BEGIN,
+    payload: { user }
+  }
+}
+
+export const signUpSuccess = user => {
+  return {
+    type: SIGNUP_SUCCESS
+  }
+}
+
+export const signUpFail = error => {
+  return {
+    type: SIGNUP_FAIL
+  }
+}
+
+export function signUp(user) {
+  const requestOptions = {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(user)
+  }
+  return dispatch => {
+    dispatch(signUpBegin(user));
+    return fetch(`http://localhost:5000/users/register`, requestOptions)
+      .then(handleErrors)
+      .then(json => {
+        dispatch(signUpSuccess())
+        history.push('/login');
+
+      })
+      .catch(error => dispatch(signUpFail(error)));
+  }
+}
+
+
+export const loginBegin = user => {
+  return {
+    type: LOGIN_BEGIN,
+    payload: { user }
+  }
+}
+
+export const loginSuccess = user => {
+  return {
+    type: LOGIN_SUCCESS
+  }
+}
+
+export const loginFail = error => {
+  return {
+    type: LOGIN_FAIL
+  }
+}
+
+
+export function login(user) {
+  const requestOptions = {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(user)
+  }
+  return dispatch => {
+    dispatch(loginBegin(user));
+    return fetch(`http://localhost:5000/users/authenticate`, requestOptions)
+      .then(handleErrors)
+      .then(json => {
+        dispatch(loginSuccess())
+        history.push('/');
+
+      })
+      .catch(error => dispatch(loginFail(error)));
+  }
+}
+
 
 export const alertSuccess = (message) => {
   return { 
@@ -38,4 +120,12 @@ export const alertClear = () => {
   return { 
     type: ALERT_CLEAR
   }
+}
+
+
+function handleErrors(response) {
+  if (!response.ok) {
+    throw Error(response.statusText);
+  }
+  return response;
 }

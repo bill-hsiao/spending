@@ -3,25 +3,13 @@ import { combineReducers } from 'redux'
 //   CONSOLE_LOG
 // } from '../actions'
 
+import { registration } from './registration'
 
-const initialState = {
-  hello: 'world',
-  world: 'hello'
-}
-
-function init(state = initialState, action) {
-  switch (action.type) {
-    // case CONSOLE_LOG:
-    // console.log(state.hello, state.world);
-    //   return state
-    default:
-      return state
-  }
-}
+import { authentication } from './authentication'
 
 
 const rootReducer = combineReducers(
-  {init}
+  {registration, authentication}
 )
 
 export default rootReducer

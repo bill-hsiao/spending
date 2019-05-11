@@ -36,8 +36,11 @@ async function create(param) {
 async function authenticate(param) {
   try {
     const user = await User.findOne({ username: param.username })
-    if (!user) throw 'not found'
-    if (user && await bcrypt.compare(param.password, user.password)) {
+    if (!user) throw err
+    param.hash = await bcrypt.hash(param.password, 10);
+    
+    if (user && await bcrypt.compare(param.hash, user.hash)) {
+      console.log(param.hash, user.hash)
       const { password, ...userWithoutpassword } = user.toObject();
       const token = await jwt.sign({ sub: user.id }, config.JWT_SECRET);
       console.log(token);
