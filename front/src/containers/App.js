@@ -8,7 +8,7 @@ import {
   alertError, 
   alertClear 
 } from '../redux/actions'
-
+import Landing from '../pages/landing'
 import Register from '../pages/register'
 import Login from '../pages/login'
 
@@ -40,9 +40,9 @@ class App extends React.Component {
   
 
 
-
         <Router history={history}>
           <div>
+          <Route path="/" component={Landing}/>
           <Route path="/login" component={Login} />
 
           <Route path="/register" component={Register} />
@@ -51,6 +51,8 @@ class App extends React.Component {
 
             </div>
         </Router>
+        <Landing/>
+
         </div>
         </div>
     )

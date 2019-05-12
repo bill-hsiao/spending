@@ -10,37 +10,38 @@ module.exports = {
   getAll
 
 }
-
+//done
 async function register(ctx, next) {
-  console.log(ctx.request.body)
-  const userParam = ctx.request.body;
-  console.log(userParam);
+  const userParam = ctx.request.body
   try {
     const response = await user.create(userParam)
-    ctx.response.body = await response
+    if (response === 'User with that name exists') {
+      ctx.response.status = 204
+    } else {
+      ctx.response.body = response
+    }
   } catch (error) {
-    console.log(error);
     next(error)
   }
 }
-
+//done
 async function authenticate(ctx, next) {
-  let userParam = ctx.request.body;
-  console.log(userParam);
+  const userParam = ctx.request.body
   try {
     const response = await user.authenticate(userParam)
-    console.log(response);
-    ctx.response.body = response
+    if (response === 'User not found') {
+      ctx.response.status = 204
+    } else {
+      ctx.response.body = response
+    }
   } catch (error) {
-    console.log(error);
     next(error)
   }
 }
 
 async function update(ctx, next) {
-  const userParam = ctx.request.body;
+  const userParam = ctx.request.body
   const id = ctx.request.query.id
-  console.log(ctx.request.query.id, userParam);
   try {
     const response = await user.update(id, userParam)
     ctx.response.body = await response

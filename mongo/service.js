@@ -17,38 +17,32 @@ module.exports = {
 async function create(param) {
   try {
     if (await User.findOne({ username: param.username })) {
-      console.log('found!');
-      throw 'user found'
+      return 'User with that name exists'
     } else {
       const user = new User(param)
       user.hash = await bcrypt.hash(param.password, 10);
       await user.save();
     }
   } catch (err) {
-    console.log('error creating user')
     throw err
   }
 
 }
 
-
-
-async function authenticate(param) {
+async function authenticate(param, err) {
   try {
     const user = await User.findOne({ username: param.username })
-    if (!user) throw err
+    if (!user) {
+      return 'User not found'
+    }
     param.hash = await bcrypt.hash(param.password, 10);
-    
     if (user && await bcrypt.compare(param.hash, user.hash)) {
-      console.log(param.hash, user.hash)
       const { password, ...userWithoutpassword } = user.toObject();
       const token = await jwt.sign({ sub: user.id }, config.JWT_SECRET);
-      console.log(token);
       return { ...userWithoutpassword, token: await token}
     }
   }
   catch (err) {
-    console.log('error authenticating user');
     throw err
   }
 }
