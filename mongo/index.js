@@ -22,6 +22,7 @@ User.set('toJSON', { virtuals: true });
 
 User.pre('save', function(next) {
   console.log('before save');
+  
   next();
 });
 // User.pre('save', async function() {

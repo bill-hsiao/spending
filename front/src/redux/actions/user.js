@@ -1,5 +1,5 @@
 import fetch from 'cross-fetch'
-import { history } from '../bin/history'
+import { history } from '../../bin/history'
 
 export const ALERT_SUCCESS = 'ALERT_SUCCESS'
 export const ALERT_ERROR = 'ALERT_ERROR'
@@ -23,43 +23,16 @@ export const USERS_DELETE_BEGIN = 'USERS_DELETE_BEGIN'
 export const USERS_DELETE_SUCCESS = 'USERS_DELETE_SUCCESS'
 export const USERS_DELETE_FAILURE = 'USERS_DELETE_FAILURE'
 
-export const signUpBegin = user => {
-  return {
-    type: SIGNUP_BEGIN,
-    payload: { user }
-  }
-}
-
-export const signUpSuccess = user => {
-  return {
-    type: SIGNUP_SUCCESS
-  }
-}
-
-export const signUpFail = error => {
-  return {
-    type: SIGNUP_FAIL
-  }
-}
 
 export function signUp(user) {
-  // const begin = (user) =>  Object.assign({}, { type: SIGNUP_BEGIN, payload: { user } } )
-  const begin = user =>  ({ type: SIGNUP_BEGIN, payload: { user } } )
-
-  const success = user => {
-    return { type: SIGNUP_SUCCESS }
-  }
-
-  const fail = error => {
-    return { type: SIGNUP_FAIL }
-  }
+  const begin = user =>  ({ type: SIGNUP_BEGIN, payload: { user } })
+  const success = user => ({ type: SIGNUP_SUCCESS })
+  const fail = error => ({ type: SIGNUP_FAIL })
   const requestOptions = {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(user)
   }
-  
-
   return dispatch => {
     dispatch(begin(user));
     return fetch(`http://localhost:5000/users/register`, requestOptions)
@@ -76,42 +49,34 @@ export function signUp(user) {
 }
 
 
-export const loginBegin = user => {
-  return {
-    type: LOGIN_BEGIN,
-    payload: { user }
-  }
-}
-
-export const loginSuccess = user => {
-  return {
-    type: LOGIN_SUCCESS
-  }
-}
-
-export const loginFail = error => {
-  return {
-    type: LOGIN_FAIL
-  }
-}
-
 
 export function login(user) {
+  const begin = user =>  ({ type: LOGIN_BEGIN, payload: { user } })
+  const success = user => ({ type: LOGIN_SUCCESS })
+  const fail = error => ({ type: LOGIN_FAIL })
   const requestOptions = {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(user)
   }
   return dispatch => {
-    dispatch(loginBegin(user));
+    dispatch(begin(user));
     return fetch(`http://localhost:5000/users/authenticate`, requestOptions)
       .then(handleErrors)
-      .then(json => {
-        dispatch(loginSuccess())
-        history.push('/');
+      .then(user => {
+        if (user.token) {
+          localStorage.setItem('user', JSON.stringify(user));
+          history.push('/');
+          dispatch(success())
+
+        }
+        return user
+
+        // dispatch(success())
+        // history.push('/');
 
       })
-      .catch(error => dispatch(loginFail(error)));
+      .catch(error => dispatch(fail(error)));
   }
 }
 

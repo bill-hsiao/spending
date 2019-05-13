@@ -4,6 +4,7 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const config = process.env.JWT_SECRET
 const {User} = require('./index')
+const Exception = require('./exceptions')
 
 module.exports = {
   create,
@@ -15,37 +16,82 @@ module.exports = {
 }
 
 async function create(param) {
+  console.log(param)
   try {
     if (await User.findOne({ username: param.username })) {
-      return 'User with that name exists'
+      const error = new Exception(204, 'User with that name exists')
+
+      throw error
+
     } else {
+      console.log('no error')
       const user = new User(param)
-      user.hash = await bcrypt.hash(param.password, 10);
-      await user.save();
+      user.hash = await bcrypt.hashSync(param.password, 10);
+      console.log(user)
+      await user.save()
+      return user
     }
-  } catch (err) {
-    throw err
+  } catch (error) {
+    console.log('caught')
+    return error
   }
-
 }
-
-async function authenticate(param, err) {
+async function authenticate(param) {
+  // console.log('hi')
   try {
     const user = await User.findOne({ username: param.username })
     if (!user) {
-      return 'User not found'
+      // return 'User not found'
+      const error = new Exception(204, 'User not found')
+      console.log('before throw')
+      throw error
+    } else {
+      
     }
-    param.hash = await bcrypt.hash(param.password, 10);
-    if (user && await bcrypt.compare(param.hash, user.hash)) {
-      const { password, ...userWithoutpassword } = user.toObject();
-      const token = await jwt.sign({ sub: user.id }, config.JWT_SECRET);
-      return { ...userWithoutpassword, token: await token}
-    }
-  }
-  catch (err) {
-    throw err
-  }
+    // console.log(err + 'error')
+    // throw err
+    // console.log('hi')
+  } catch (error) {
+    // console.log('hello')
+    console.log('caught')
+    return error
+    // return 'User not found'
+  } 
+  // return 'User not found'
 }
+// async function authenticate(param) {
+//   console.log('hi')
+
+//   try {
+//     const user = await User.findOne({ username: param.username })
+//     if (!user) {
+//       return 'User not found'
+//     }
+//     const { hash, err } = await bcrypt.hash(param.password, 10);
+//     console.log(hash, err)
+
+
+//     if (bcrypt.compareSync(param.hash, user.hash)) {
+//       console.log('Wrong password')
+//       return 'Wrong password'
+//     } else 
+   
+//     if (user && await bcrypt.compareSync(param.password, user.hash)) {
+//       console.log(user.hash)
+//       console.log(bcrypt.compareSync(param.password, user.hash))
+//       console.log('here', param)
+//       const { hash, ...userWithoutpassword } = user.toObject();
+//       const token = await jwt.sign({ sub: user.id }, config.JWT_SECRET);
+
+//       const {hash, ...userWithoutHash } = user.toObject();
+//       console.log(hash, ...userWithoutHash)
+//       return { ...userWithoutpassword, token: await token}
+//     }
+//   }
+//   catch (err) {
+//     throw err
+//   }
+// }
 
 
 
