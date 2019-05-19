@@ -1,7 +1,7 @@
 const userController = require('./controller')
 
 module.exports = router => {
-
+    router.prefix('/users')
     router.post('/register', userController.register)
     router.post('/authenticate', userController.authenticate)
     router.put('/:id', userController.update)
@@ -10,6 +10,6 @@ module.exports = router => {
     router.get('/current', userController.getCurrent)
     router.get('/', userController.getAll)
 
-    return router.routes()
+    // return router.routes()
     
 }

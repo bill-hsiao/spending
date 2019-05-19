@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+mongoose.Promise = global.Promise
 const uri = `mongodb://${process.env.DB_USER}:${process.env.DB_PASS}@${process.env.DB_URI}`
 
 async function connect() {

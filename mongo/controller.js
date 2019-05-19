@@ -14,23 +14,12 @@ module.exports = {
 async function register(ctx, next) {
   const userParam = ctx.request.body
   try {
-    const response = await user.create(userParam).then(()=>{
-      console.log(typeof response.code)
-      console.log(response._message)
-
-    })
-    // console.log(typeof response.code)
-    // console.log(response._message)
-    const responses = await response
-    console.log(responses._message)
-    // ctx.send(204, 'user with that name exists')
-    if (typeof response.code() === Number) {
-      ctx.response.status = response.code
-      // const error = response
-      // throw error
-      console.log(typeof response.code)
-    } else {
+    const response = await user.create(userParam)
+    if (response) {
       ctx.response.body = response
+      ctx.response.status = 200
+    } else {
+      throw error
     }
   } catch (error) {
     next(error)
@@ -43,10 +32,12 @@ async function authenticate(ctx, next) {
 
   try {
     const response = await user.authenticate(userParam)
-    console.log(await response)
-    if (response === 'User not found') {
+    console.log(response)
+    if (response) {
+      ctx.response.body = response
+
       // console.log(err)
-      ctx.response.status = response.code
+      // ctx.response.status = response
     } else {
       console.log(response)
       ctx.response.body = response

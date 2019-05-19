@@ -25,7 +25,7 @@ app.use(BodyParser({
 
 app.use(Respond())
 
-require('./mongo/routes')(router)
+require('./mongo/user')(router)
 app.use(router.routes())
 app.use(router.allowedMethods())
 
