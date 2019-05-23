@@ -37,7 +37,7 @@ async function authenticate(ctx, next) {
       ctx.response.body = response
 
       // console.log(err)
-      // ctx.response.status = response
+      ctx.response.status = 200
     } else {
       console.log(response)
       ctx.response.body = response

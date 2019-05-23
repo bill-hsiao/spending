@@ -52,134 +52,47 @@ async function create(param) {
 //     return null
 //   }
 // }
+// function token(payload) {
+//   // ...
+
+//   return new Promise((resolve, reject) => {
+//     jwt.sign(payload, config, { algorithm: "RS256" }, function(err, token2) {
+//       if (err) reject(err);
+//       else resolve(token2)
+//     });
+//   })
+// }
+
+
 async function authenticate(param) {
-  try {
+  // try {
     const user = await User.findOne({ username: param.username })
-      // param.hash = await bcrypt.hash(param.password, 10)
-      // if (param.hash) {
-        
-      //   bcrypt.compare(param.password, user.hash).then((res) => {
-      //     console.log(res)
-      //     console.log('logged in')
-      //     return res
-      //   })
-      // }
+    if (!user) {
+      console.log('user not found')
+      return null
+    } else { 
       if (bcrypt.compareSync(param.password, user.hash)) {
-                  console.log('logged in')
-
+        console.log('logged in')
+      const {hash, ...userWithoutHash } = user.toObject()
+      console.log(hash)
+        console.log(userWithoutHash)
+        const token = await jwt.sign({ sub: user.id }, process.env.JWT_SECRET, { algorithm: 'RS256'})
+        console.log( token)
+      return { ...userWithoutHash, token: await token}         
       }
-
     else {
-      console.log('bad login info')
+      console.log('bad pass info')
       const error = new Exception(204, 'invalid credentials')
       throw error
     } 
-  } catch (error) {
-    console.log('bad login info; at caught')
-      return null
     }
+      
+  // } catch (error) {
+    // console.log('bad login info; at caught')
+      // return null
+    // }
    
 }
-
-// async function authenticate(param) {
-//   try {
-//     const user = await User.findOne({ username: param.username })
-//     console.log(user)
-//     if (await User.findOne({ username: param.username })) {
-
-//       console.log('found user')
-//       param.hash = bcrypt.hashSync(param.password, 10)
-
-//       if (bcrypt.compareSync(param.hash, user.hash)) {
-//         console.log('successfully logged in')
-//         const { hash, ...userWithoutpassword } = user.toObject();
-//         const token = await jwt.sign({ sub: user.id }, config.JWT_SECRET);
-//         const {hash, ...userWithoutHash } = user.toObject();
-//         console.log(hash, ...userWithoutHash)
-//         return { ...userWithoutpassword, token: await token}
-//       } else {
-//         console.log('bad pass')
-//         const error = new Exception(204, 'Bad pass')
-//         throw error
-//       }   
-//     } else {
-//       console.log('bad username')
-
-//       const error = new Exception(204, 'Bad username')
-//       throw error
-//     }
-
-      // return 'User not found'
-    
-    // console.log(err + 'error')
-  //   // throw err
-  //   // console.log('hi')
-  // } catch (error) {
-  //   // console.log('hello')
-  //   console.log('caught')
-  //   return error
-  //   // return 'User not found'
-  // } 
-  // return 'User not found'
-// }
-// async function authenticate(param) {
-//   // console.log('hi')
-//   try {
-//     const user = await User.findOne({ username: param.username })
-//     if (!user) {
-//       // return 'User not found'
-//       const error = new Exception(204, 'User not found')
-//       console.log('before throw')
-//       throw error
-//     } else {
-      
-//     }
-//     // console.log(err + 'error')
-//     // throw err
-//     // console.log('hi')
-//   } catch (error) {
-//     // console.log('hello')
-//     console.log('caught')
-//     return error
-//     // return 'User not found'
-//   } 
-//   // return 'User not found'
-// }
-// async function authenticate(param) {
-//   console.log('hi')
-
-//   try {
-//     const user = await User.findOne({ username: param.username })
-//     if (!user) {
-//       return 'User not found'
-//     }
-//     const { hash, err } = await bcrypt.hash(param.password, 10);
-//     console.log(hash, err)
-
-
-//     if (bcrypt.compareSync(param.hash, user.hash)) {
-//       console.log('Wrong password')
-//       return 'Wrong password'
-//     } else 
-   
-    // if (user && await bcrypt.compareSync(param.password, user.hash)) {
-    //   console.log(user.hash)
-    //   console.log(bcrypt.compareSync(param.password, user.hash))
-    //   console.log('here', param)
-    //   const { hash, ...userWithoutpassword } = user.toObject();
-    //   const token = await jwt.sign({ sub: user.id }, config.JWT_SECRET);
-
-    //   const {hash, ...userWithoutHash } = user.toObject();
-    //   console.log(hash, ...userWithoutHash)
-    //   return { ...userWithoutpassword, token: await token}
-    // }
-//   }
-//   catch (err) {
-//     throw err
-//   }
-// }
-
-
 
 async function update(param, id) {
   try {
