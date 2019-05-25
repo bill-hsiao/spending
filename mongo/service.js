@@ -4,7 +4,8 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const config = process.env.JWT_SECRET
 const {User} = require('./index')
-const Exception = require('./exceptions')
+const { Exception, Sign } = require('./helpers')
+const sign = Sign(jwt)
 
 module.exports = {
   create,
@@ -33,39 +34,8 @@ async function create(param) {
 }
 
 
-// async function authenticate(param) {
-//   try {
-//     const user = await User.findOne({ username: param.username })
-//     if (await bcrypt.compare(param.password, user.hash)) {
-//       console.log('successfully logged in')
-//       const { hash, ...userWithoutpassword } = user.toObject();
-//       const token = await jwt.sign({ sub: user.id }, config.JWT_SECRET);
-//       const {hash, ...userWithoutHash } = user.toObject();
-//       console.log(hash, ...userWithoutHash)
-//       return { ...userWithoutpassword, token: await token}         
-//     } else {
-//       const error = new Error(204, 'Invalid credentials')
-//       throw error
-//     }
-//   } catch (error) {
-//     console.log(error)
-//     return null
-//   }
-// }
-// function token(payload) {
-//   // ...
-
-//   return new Promise((resolve, reject) => {
-//     jwt.sign(payload, config, { algorithm: "RS256" }, function(err, token2) {
-//       if (err) reject(err);
-//       else resolve(token2)
-//     });
-//   })
-// }
-
-
 async function authenticate(param) {
-  // try {
+  try {
     const user = await User.findOne({ username: param.username })
     if (!user) {
       console.log('user not found')
@@ -74,11 +44,10 @@ async function authenticate(param) {
       if (bcrypt.compareSync(param.password, user.hash)) {
         console.log('logged in')
       const {hash, ...userWithoutHash } = user.toObject()
-      console.log(hash)
-        console.log(userWithoutHash)
-        const token = await jwt.sign({ sub: user.id }, process.env.JWT_SECRET, { algorithm: 'RS256'})
-        console.log( token)
-      return { ...userWithoutHash, token: await token}         
+        const token = sign({ sub: user.id }, process.env.JWT_SECRET, { algorithm: 'HS256'})
+        console.log(token)
+      return { ...userWithoutHash, token: await token}   
+
       }
     else {
       console.log('bad pass info')
@@ -86,11 +55,14 @@ async function authenticate(param) {
       throw error
     } 
     }
+
       
-  // } catch (error) {
+  } catch (error) {
     // console.log('bad login info; at caught')
       // return null
-    // }
+      console.log(error)
+      return error
+    }
    
 }
 

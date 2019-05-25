@@ -18,6 +18,8 @@ async function register(ctx, next) {
     if (response) {
       ctx.response.body = response
       ctx.response.status = 200
+      return next()
+
     } else {
       throw error
     }
@@ -34,15 +36,27 @@ async function authenticate(ctx, next) {
     const response = await user.authenticate(userParam)
     console.log(response)
     if (response) {
-      ctx.response.body = response
+      // ctx.response.body = response
+      // ctx.response.body = response
 
-      // console.log(err)
-      ctx.response.status = 200
-    } else {
       console.log(response)
-      ctx.response.body = response
+      // console.log(err)
+      ctx.response.status = 200;
+      ctx.body = {
+        ...response,
+        ok: true,
     }
+    next()
+  } 
+    // } else {
+    //   console.log('else')
+    //   console.log(response)
+    //   ctx.response.body = response
+    //   return next()
+
+    // }
   } catch (error) {
+    console.log(error)
     next(error)
   }
 }
