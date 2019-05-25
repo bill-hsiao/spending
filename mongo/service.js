@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const config = process.env.JWT_SECRET
 const {User} = require('./index')
-const { Exception, Sign } = require('./helpers')
+const { Exception, Response, Sign } = require('./helpers')
 const sign = Sign(jwt)
 
 module.exports = {
@@ -19,52 +19,41 @@ module.exports = {
 async function create(param) {
   try {
       if (await User.findOne({ username: param.username })) {
-        const error = await new Exception(204, 'User with that name exists')
-        throw error
+        console.log('user exists')
+        throw new Response('Error', 204, 'User with that name exists')
       } else {
       const user = new User(param)
       user.hash = await bcrypt.hashSync(param.password, 10);
       await user.save()
-      return user
+      return new Response('OK', 200, user)
     }
   } catch (error) {
-    console.log('caught')
-    return null
+    return error
   }
 }
-
-
 async function authenticate(param) {
   try {
     const user = await User.findOne({ username: param.username })
     if (!user) {
       console.log('user not found')
-      return null
-    } else { 
+      return new Response('Error', 204, 'user not found')
+    } else {
       if (bcrypt.compareSync(param.password, user.hash)) {
         console.log('logged in')
-      const {hash, ...userWithoutHash } = user.toObject()
+        const { hash, ...userWithoutHash } = user.toObject()
         const token = sign({ sub: user.id }, process.env.JWT_SECRET, { algorithm: 'HS256'})
-        console.log(token)
-      return { ...userWithoutHash, token: await token}   
-
+        return new Response('OK', 200, {...userWithoutHash, token: await token })
+      } else {
+        console.log('bad password') 
+        throw new Response('Error', 204, 'bad password')
       }
-    else {
-      console.log('bad pass info')
-      const error = new Exception(204, 'invalid credentials')
-      throw error
-    } 
     }
-
-      
   } catch (error) {
-    // console.log('bad login info; at caught')
-      // return null
-      console.log(error)
-      return error
-    }
-   
+    console.log(error) 
+    return error
+  }
 }
+
 
 async function update(param, id) {
   try {

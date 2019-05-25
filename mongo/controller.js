@@ -15,47 +15,37 @@ async function register(ctx, next) {
   const userParam = ctx.request.body
   try {
     const response = await user.create(userParam)
-    if (response) {
-      ctx.response.body = response
-      ctx.response.status = 200
+    if (response.type === 'OK') {
+      ctx.response.body = response.body
+      ctx.response.status = response.code
       return next()
-
     } else {
+      error = response
       throw error
     }
   } catch (error) {
+    ctx.response.status = error.code
+    console.log(error)
     next(error)
   }
 }
 //done
 async function authenticate(ctx, next) {
   const userParam = ctx.request.body
-  console.log(typeof userParam)
-
   try {
     const response = await user.authenticate(userParam)
     console.log(response)
-    if (response) {
-      // ctx.response.body = response
-      // ctx.response.body = response
-
+    if (response.type === 'OK') {
+      ctx.response.body = response.body
+      ctx.response.status = response.code
       console.log(response)
-      // console.log(err)
-      ctx.response.status = 200;
-      ctx.body = {
-        ...response,
-        ok: true,
-    }
-    next()
-  } 
-    // } else {
-    //   console.log('else')
-    //   console.log(response)
-    //   ctx.response.body = response
-    //   return next()
-
-    // }
+    return next()
+  } else {
+    error = response
+    throw error
+  }
   } catch (error) {
+    ctx.response.status = error.code
     console.log(error)
     next(error)
   }

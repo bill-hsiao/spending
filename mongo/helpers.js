@@ -20,6 +20,12 @@ function Exception(status, error) {
 }
 
 
+function Response(type, status, body) {
+  this.type = type;
+  this.code = status;
+  this.body = body;
+}
+
 // function sign(jwt, payload, secret, options) {
 //   return new Promise((resolve, reject) => {
 //     jwt.sign(payload, secret, options, (error, body) => {
@@ -62,7 +68,7 @@ function Sign(jwt) {
 
   
 
-module.exports = {Exception, Sign}
+module.exports = {Exception, Sign, Response}
 
 // function Exception(status, error) {
 //     this.name = 'Error';
