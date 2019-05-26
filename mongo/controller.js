@@ -32,14 +32,23 @@ async function register(ctx, next) {
 //done
 async function authenticate(ctx, next) {
   const userParam = ctx.request.body
+  console.log(ctx.request.body)
   try {
     const response = await user.authenticate(userParam)
     console.log(response)
     if (response.type === 'OK') {
-      ctx.response.body = response.body
-      ctx.response.status = response.code
-      console.log(response)
-    return next()
+      // ctx.set()
+      // ctx.response.body = {}
+      ctx.response.body = await response.body
+      ctx.body = response.body
+      console.log('test')
+      console.log(response.body)
+      console.log('test')
+
+      // console.log(response.body)
+      // ctx.status = response.code
+      // console.log(response)
+    // await next()
   } else {
     error = response
     throw error
@@ -47,11 +56,13 @@ async function authenticate(ctx, next) {
   } catch (error) {
     ctx.response.status = error.code
     console.log(error)
+    // ctx.throw(error.code, error.message)
+
     next(error)
   }
 }
-
 async function update(ctx, next) {
+  // const {body: userParam, query.id: id} = ctx.request
   const userParam = ctx.request.body
   const id = ctx.request.query.id
   try {

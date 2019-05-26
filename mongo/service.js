@@ -2,9 +2,8 @@ const mongoose = require('mongoose')
 mongoose.Promise = global.Promise
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
-const config = process.env.JWT_SECRET
 const {User} = require('./index')
-const { Exception, Response, Sign } = require('./helpers')
+const { Response, Sign } = require('./helpers')
 const sign = Sign(jwt)
 
 module.exports = {

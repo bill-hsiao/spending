@@ -52,7 +52,7 @@ export function signUp(user) {
 
 export function login(user) {
   const begin = user =>  ({ type: LOGIN_BEGIN, payload: { user } })
-  const success = user => ({ type: LOGIN_SUCCESS })
+  const success = user => ({ type: LOGIN_SUCCESS, payload: { user } })
   const fail = error => ({ type: LOGIN_FAIL })
   const requestOptions = {
     method: 'POST',
@@ -63,22 +63,62 @@ export function login(user) {
     dispatch(begin(user));
     return fetch(`http://localhost:5000/users/authenticate`, requestOptions)
       .then(handleErrors)
-      .then(user => {
-        if (user.token) {
+      .then(response => {
+        const user = response.json()
+        return user})
+        .then(user => {
+          console.log(user)
           localStorage.setItem('user', JSON.stringify(user));
           history.push('/');
-          dispatch(success())
-
-        }
-        return user
-
-        // dispatch(success())
-        // history.push('/');
-
-      })
+          dispatch(success(user))
+          return user
+        })
       .catch(error => dispatch(fail(error)));
   }
 }
+
+function logout() {
+  localStorage.removeItem('user')
+}
+// export function login(user) {
+//   const begin = user =>  ({ type: LOGIN_BEGIN, payload: { user } })
+//   const success = user => ({ type: LOGIN_SUCCESS })
+//   const fail = error => ({ type: LOGIN_FAIL })
+//   const requestOptions = {
+//     method: 'POST',
+//     headers: { 'Content-Type': 'application/json' },
+//     body: JSON.stringify(user)
+//   }
+//   return dispatch => {
+//     dispatch(begin(user));
+//     return fetch(`http://localhost:5000/users/authenticate`, requestOptions)
+//       .then(handleErrors)
+//       .then(response => { response.json()})
+//       .then(json => {
+//         const user = JSON.parse(json)
+//         console.log(user)
+//                   dispatch(success())
+// //
+//       })
+//         // dispatch(success())
+
+//         // if (response.token) {
+//           // localStorage.setItem('user', JSON.stringify(response));
+//           // console.log(response)
+//           // dispatch(success())
+
+//           // history.push('/');
+
+//         // }
+//         // return response
+
+//         // dispatch(success())
+//         // history.push('/');
+
+//       // })
+//       .catch(error => dispatch(fail(error)));
+//   }
+// }
 
 
 export const alertSuccess = (message) => {
