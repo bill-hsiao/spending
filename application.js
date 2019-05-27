@@ -62,6 +62,8 @@ if (process.env.NODE_ENV === 'production') {
     } catch(err) {
   //
     console.log(err)
+    await Send(ctx, './client/build/index.html');
+
       return next();
     }
   })
