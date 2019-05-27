@@ -34,7 +34,7 @@ class App extends React.Component {
     return (
     <div className="jumbotron">
         <div className="App">
-        <h1>Pocket Budget</h1>
+        <h1>SPA sLogin Boilerplate</h1>
         
         <Router history={history}>
         <div>
