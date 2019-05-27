@@ -26,30 +26,82 @@ export const USERS_DELETE_FAILURE = 'USERS_DELETE_FAILURE'
 
 
 export function signUp(user) {
-  const begin = user =>  ({ type: SIGNUP_BEGIN })
-  const success = user => ({ type: SIGNUP_SUCCESS })
-  const fail = error => ({ type: SIGNUP_FAIL })
+  const begin = () =>  ({ type: SIGNUP_BEGIN })
+  const success = () => ({ type: SIGNUP_SUCCESS })
+  const fail = () => ({ type: SIGNUP_FAIL })
   const requestOptions = {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(user)
   }
-  return dispatch => {
-    dispatch(begin(user));
-    return fetch(`http://localhost:5000/users/register`, requestOptions)
-      .then(handleErrors)
-      .then(json => {
-        dispatch(success())
-        history.push('/login');
-
-      })
-      .catch(error => dispatch(fail(error)));
+  return async dispatch => {
+    dispatch(begin(user))
+    try {
+      const response = await fetch(`http://localhost:5000/users/register`, requestOptions).then(handleErrors)
+      user = await response.json()
+      dispatch(success())
+      history.push('/login')
+    } catch (error) {
+      console.log(error)
+      dispatch(fail())
+    }
   }
-  
+}
+export function login(user) {
+  const begin = user =>  ({ type: LOGIN_BEGIN, payload: { user } })
+  const success = user => ({ type: LOGIN_SUCCESS, payload: { user } })
+  const fail = error => ({ type: LOGIN_FAIL })
+  const requestOptions = {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(user)
+  }
+  return async dispatch => {
+    dispatch(begin(user));
+    try {
+      const response = await fetch(`http://localhost:5000/users/authenticate`, requestOptions).then(handleErrors)
+      user = await response.json()
+      history.push('/')
+      dispatch(success(await user))
+      localStorage.setItem('user', JSON.stringify(await user));
+      return user
+    } catch (error) {
+      console.log(error)
+      dispatch(fail(error));
 
+    }
+  }
+}
+export function logout() {
+  localStorage.removeItem('user')
+  return { type: USERS_LOGOUT }
 }
 
 //preserve
+
+// export function signUp(user) {
+//   const begin = user =>  ({ type: SIGNUP_BEGIN })
+//   const success = user => ({ type: SIGNUP_SUCCESS })
+//   const fail = error => ({ type: SIGNUP_FAIL })
+//   const requestOptions = {
+//     method: 'POST',
+//     headers: { 'Content-Type': 'application/json' },
+//     body: JSON.stringify(user)
+//   }
+//   return dispatch => {
+//     dispatch(begin(user));
+//     return fetch(`http://localhost:5000/users/register`, requestOptions)
+//       .then(handleErrors)
+//       .then(json => {
+//         dispatch(success())
+//         history.push('/login');
+
+//       })
+//       .catch(error => dispatch(fail(error)));
+//   }
+  
+
+// }
 
 // export function login(user) {
 //   const begin = user =>  ({ type: LOGIN_BEGIN, payload: { user } })
@@ -104,32 +156,7 @@ export function signUp(user) {
 
 //   }
 // }
-export function login(user) {
-  const begin = user =>  ({ type: LOGIN_BEGIN, payload: { user } })
-  const success = user => ({ type: LOGIN_SUCCESS, payload: { user } })
-  const fail = error => ({ type: LOGIN_FAIL })
-  const requestOptions = {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(user)
-  }
-  return async dispatch => {
-    dispatch(begin(user));
-    try {
-      const response = await fetch(`http://localhost:5000/users/authenticate`, requestOptions).then(handleErrors)
-      user = await response.json()
-      history.push('/')
-      dispatch(success(await user))
-      localStorage.setItem('user', JSON.stringify(await user));
-      return user
-    } catch (error) {
-      console.log(error)
-      dispatch(fail(error));
 
-    }
-  }
-}
-  
   
 //   dispatch => {
 //     dispatch(begin(user));
@@ -181,10 +208,7 @@ export function login(user) {
 
 
 
-export function logout() {
-  localStorage.removeItem('user')
-  return { type: USERS_LOGOUT }
-}
+
 
 // ÷/
 // export function login(user) {
