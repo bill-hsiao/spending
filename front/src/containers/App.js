@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Router, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Route } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { history } from '../bin/history'
 import { PrivateRoute } from '../components/privateRoute'
@@ -17,6 +17,8 @@ class App extends React.Component {
     const { dispatch } = this.props;
     history.listen((location, action) => {
         // clear alert on location change
+        history.go()
+        console.log(history)
     });
 
   }

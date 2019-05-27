@@ -6,6 +6,10 @@ import { middleWare } from './middleware/middleWare'
 
 const loggerMiddleware = createLogger()
 
-export default function configureStore(preloadedState) {
-  return createStore( rootReducer, preloadedState, applyMiddleware(thunkMiddleware, loggerMiddleware, middleWare))
-}
+export const store = createStore(
+  rootReducer, 
+  applyMiddleware(
+    thunkMiddleware, 
+    loggerMiddleware, 
+    middleWare)
+)

@@ -49,8 +49,61 @@ export function signUp(user) {
 
 }
 
+//preserve
 
+// export function login(user) {
+//   const begin = user =>  ({ type: LOGIN_BEGIN, payload: { user } })
+//   const success = user => ({ type: LOGIN_SUCCESS, payload: { user } })
+//   const fail = error => ({ type: LOGIN_FAIL })
+//   const requestOptions = {
+//     method: 'POST',
+//     headers: { 'Content-Type': 'application/json' },
+//     body: JSON.stringify(user)
+//   }
+//   return async dispatch => {
+//     dispatch(begin(user));
+//     return await fetch(`http://localhost:5000/users/authenticate`, requestOptions)
+//       .then(handleErrors)
+//       .then(response => {
+//         // history.push('/')
 
+//         const user = response.json()
+//         localStorage.setItem('user', JSON.stringify(user));
+//         // return user})
+//         })
+//         .then(
+//           user => {
+
+//                     dispatch(success(user))
+//                     history.push('/')
+
+//         // .then(user => {
+//           // console.log(user)
+//           // localStorage.setItem('user', JSON.stringify(user));
+//           // dispatch(success(user))
+//           // history.push('/');
+
+//           // return user
+//         })
+//       .catch(error => dispatch(fail(error)));
+//   }
+// }
+
+//preserve
+// export const login = async user => {
+//   const begin = user =>  ({ type: LOGIN_BEGIN, payload: { user } })
+//   const success = user => ({ type: LOGIN_SUCCESS, payload: { user } })
+//   const fail = error => ({ type: LOGIN_FAIL })
+//   const requestOptions = {
+//     method: 'POST',
+//     headers: { 'Content-Type': 'application/json' },
+//     body: JSON.stringify(user)
+//   }
+//   return dispatch => {
+//     dispatch(begin(user));
+
+//   }
+// }
 export function login(user) {
   const begin = user =>  ({ type: LOGIN_BEGIN, payload: { user } })
   const success = user => ({ type: LOGIN_SUCCESS, payload: { user } })
@@ -62,28 +115,71 @@ export function login(user) {
   }
   return async dispatch => {
     dispatch(begin(user));
-    return await fetch(`http://localhost:5000/users/authenticate`, requestOptions)
-      .then(handleErrors)
-      .then(response => {
-        const user = response.json()
-        localStorage.setItem('user', JSON.stringify(user));
-        // return user})
-        })
-        .then(
-          user => {
-                    dispatch(success(user))
-          history.push('/')
-        // .then(user => {
-          // console.log(user)
-          // localStorage.setItem('user', JSON.stringify(user));
-          // dispatch(success(user))
-          // history.push('/');
+    try {
+      const response = await fetch(`http://localhost:5000/users/authenticate`, requestOptions).then(handleErrors)
+      user = await response.json()
+      history.push('/')
+      dispatch(success(await user))
+      localStorage.setItem('user', JSON.stringify(await user));
+      return user
+    } catch (error) {
+      console.log(error)
+      dispatch(fail(error));
 
-          // return user
-        })
-      .catch(error => dispatch(fail(error)));
+    }
   }
 }
+  
+  
+//   dispatch => {
+//     dispatch(begin(user));
+//     return fetch(`http://localhost:5000/users/authenticate`, requestOptions)
+//       .then(handleErrors)
+//       .then(user => {
+//         // history.push('/')
+//         // return user.json()
+//       // })
+//       // .then(user => {
+//         console.log(user)
+
+//         localStorage.setItem('user', JSON.stringify(user));
+//         dispatch(success(user))
+//         history.push('/')
+
+//       })
+//         // user = await user.json()
+//         // console.log(user)
+//         // localStorage.setItem('user', JSON.stringify(user));
+//         // dispatch(success(user))
+
+//         // history.push('/')
+
+//         // return user})
+//         // return user
+//         // })
+//         // .then(
+//           // user => {
+
+//                     // dispatch(success(user))
+//                     // history.push('/')
+
+//         // .then(user => {
+//           // console.log(user)
+//           // localStorage.setItem('user', JSON.stringify(user));
+//           // dispatch(success(user))
+//           // history.push('/');
+
+//           // return user
+//         // }
+//         // error => {
+//             // dispatch(fail(error));
+//             // dispatch(alertActions.error(error.toString()));
+//         // )
+//       .catch(error => dispatch(fail(error)));
+//   }
+// }
+
+
 
 export function logout() {
   localStorage.removeItem('user')
@@ -154,8 +250,30 @@ export const alertClear = () => {
 
 
 function handleErrors(response) {
-  if (!response.ok) {
+  console.log(response)
+  if (!response.ok || response.statusText === 'No Content') {
     throw Error(response.statusText);
-  }
-  return response;
+  } 
+  return response
 }
+
+// function handleResponse(response) {
+//   return response.text().then(text => {
+//       const data = text && JSON.parse(text);
+//       if (!response.ok) {
+//         throw Promise.reject(response.statusText);
+//           // if (response.status === 401) {
+//               // auto logout if 401 response returned from api
+//               // logout();
+//               // location.reload(true);
+//           // }
+
+//           // const error = (data && data.message) || response.statusText;
+//           // return Promise.reject(error);/
+//       } else {
+//         return data;
+
+//       }
+
+//   });
+// }

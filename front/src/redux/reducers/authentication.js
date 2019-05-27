@@ -7,6 +7,8 @@ import {
 
 let user = JSON.parse(localStorage.getItem('user'))
 
+// user = (user === undefined ? {} : user)
+
 const initialState = user ? { loggedIn: true, user } : {}
 
 export function authentication(state = initialState, action) {
