@@ -30,7 +30,23 @@ const router = new Router()
 //   })
 // }
 
+if (process.env.NODE_ENV === 'production') {
 
+  app.use(Static(__dirname + '/front/build'))
+  router.get('*', async (ctx, next) => {
+    try {
+      console.log('hi')
+      console.log(this, ctx.request, ctx.response)
+      await Send(ctx, './client/build/index.html');
+    } catch(err) {
+  //
+    console.log(err)
+    await Send(ctx, './client/build/index.html');
+
+      return next();
+    }
+  })
+}
 app.use(Logger())
 app.use(Cors())
 app.use(Helmet())
@@ -51,21 +67,5 @@ app.use(Respond())
 require('./mongo/user')(router)
 app.use(router.routes())
 app.use(router.allowedMethods())
-if (process.env.NODE_ENV === 'production') {
 
-  app.use(Static(__dirname + '/front/build'))
-  router.get('*', async (ctx, next) => {
-    try {
-      console.log('hi')
-      console.log(this, ctx.request, ctx.response)
-      await Send(ctx, './client/build/index.html');
-    } catch(err) {
-  //
-    console.log(err)
-    await Send(ctx, './client/build/index.html');
-
-      return next();
-    }
-  })
-}
 module.exports = app
