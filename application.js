@@ -1,4 +1,7 @@
 const Koa = require('koa')
+const Static = require('koa-static')
+const Send = require('koa-send');
+
 const Logger = require('koa-logger')
 const Cors = require('@koa/cors')
 const BodyParser = require('koa-bodyparser')
@@ -6,8 +9,23 @@ const Helmet = require('koa-helmet')
 const Router = require('koa-router')
 const Respond = require('koa-respond')
 
+
 const app = new Koa()
 const router = new Router()
+
+if (process.env.NODE_ENV === 'production') {
+
+  app.use(Static(__dirname + '/front/build'))
+  router.get('*', async (ctx, next) => {
+    try {
+      await Send(ctx, './client/build/index.html');
+    } catch(err) {
+  //
+    console.log(err)
+      return next();
+    }
+  })
+}
 
 
 app.use(Logger())
@@ -22,11 +40,7 @@ app.use(BodyParser({
     ctx.throw('body parse error', 422)
   }
 }))
-// app.use(async ctx => {
-//   // the parsed body will store in ctx.request.body
-//   // if nothing was parsed, body will be an empty object {}
-//   ctx.body = ctx.request.body;
-// });
+
 
 
 app.use(Respond())
