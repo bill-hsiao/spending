@@ -1,11 +1,14 @@
 import React from 'react'
 import { Router, Route, Link } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { login } from '../redux/actions'
+import { login, logout } from '../redux/actions'
 
 class Login extends React.Component {
     constructor(props) {
       super(props)
+
+      this.props.dispatch(logout())
+
       this.state = { 
             user: {
                 username: '',
@@ -55,7 +58,7 @@ class Login extends React.Component {
 }
   
 function mapStateToProps(state) {
-    const { loggedIn } = state.authentication;
+    const { loggedIn } = state.authentication
     return {
         loggedIn
     }

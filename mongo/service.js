@@ -3,9 +3,11 @@ mongoose.Promise = global.Promise
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const {User} = require('./index')
-const { Response, Sign } = require('./helpers')
+const { Response, Sign, Hash, Compare, QueryOne } = require('./helpers')
 const sign = Sign(jwt)
-
+const hash = Hash(bcrypt)
+const compare = Compare(bcrypt)
+const queryOne = QueryOne(User)
 module.exports = {
   create,
   authenticate,
@@ -17,12 +19,13 @@ module.exports = {
 
 async function create(param) {
   try {
-      if (await User.findOne({ username: param.username })) {
+      if (await queryOne({username: param.username})) {
         console.log('user exists')
         throw new Response('Error', 204, 'User with that name exists')
       } else {
       const user = new User(param)
-      user.hash = await bcrypt.hashSync(param.password, 10);
+      user.hash = await hash(param.password, 10)
+      console.log(user.hash)
       await user.save()
       return new Response('OK', 200, user)
     }
@@ -32,12 +35,15 @@ async function create(param) {
 }
 async function authenticate(param) {
   try {
-    const user = await User.findOne({ username: param.username })
+    const user = await queryOne({ username: param.username })
+    console.log(user)
+
     if (!user) {
       console.log('user not found')
       return new Response('Error', 204, 'user not found')
     } else {
-      if (bcrypt.compareSync(param.password, user.hash)) {
+      // if (bcrypt.compareSync(param.password, user.hash)) {
+      if (await compare(param.password, user.hash)) {
         console.log('logged in')
         const { hash, ...userWithoutHash } = user.toObject()
         const token = sign({ sub: user.id }, process.env.JWT_SECRET, { algorithm: 'HS256'})

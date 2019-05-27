@@ -3,12 +3,8 @@ import React from 'react'
 import { Router, Route } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { history } from '../bin/history'
-import { 
-  alertSuccess, 
-  alertError, 
-  alertClear 
-} from '../redux/actions'
-import Landing from '../pages/landing'
+import { PrivateRoute } from '../components/privateRoute'
+import { HomePage } from '../pages/homepage'
 import Register from '../pages/register'
 import Login from '../pages/login'
 
@@ -37,21 +33,14 @@ class App extends React.Component {
     <div className="jumbotron">
         <div className="App">
         <h1>Pocket Budget</h1>
-  
-
-
+        
         <Router history={history}>
-          <div>
-          <Route path="/" component={Landing}/>
+        <div>
+          <PrivateRoute exact path="/" component={HomePage} />
           <Route path="/login" component={Login} />
-
           <Route path="/register" component={Register} />
-
-
-
-            </div>
-        </Router>
-        <Landing/>
+          </div>
+          </Router>
 
         </div>
         </div>
@@ -66,3 +55,14 @@ function mapStateToProps(state) {
     }
 }
 export default connect(mapStateToProps)(App);
+
+
+// import { Route, Redirect } from 'react-router'
+
+// <Route exact path="/" render={() => (
+//   loggedIn ? (
+//     <Redirect to="/dashboard"/>
+//   ) : (
+//     <PublicHomePage/>
+//   )
+// )}/>

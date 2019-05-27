@@ -1,5 +1,6 @@
 import fetch from 'cross-fetch'
 import { history } from '../../bin/history'
+import { authHeader } from '../../bin/auth'
 
 export const ALERT_SUCCESS = 'ALERT_SUCCESS'
 export const ALERT_ERROR = 'ALERT_ERROR'
@@ -25,7 +26,7 @@ export const USERS_DELETE_FAILURE = 'USERS_DELETE_FAILURE'
 
 
 export function signUp(user) {
-  const begin = user =>  ({ type: SIGNUP_BEGIN, payload: { user } })
+  const begin = user =>  ({ type: SIGNUP_BEGIN })
   const success = user => ({ type: SIGNUP_SUCCESS })
   const fail = error => ({ type: SIGNUP_FAIL })
   const requestOptions = {
@@ -59,27 +60,37 @@ export function login(user) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(user)
   }
-  return dispatch => {
+  return async dispatch => {
     dispatch(begin(user));
-    return fetch(`http://localhost:5000/users/authenticate`, requestOptions)
+    return await fetch(`http://localhost:5000/users/authenticate`, requestOptions)
       .then(handleErrors)
       .then(response => {
         const user = response.json()
-        return user})
-        .then(user => {
-          console.log(user)
-          localStorage.setItem('user', JSON.stringify(user));
-          history.push('/');
-          dispatch(success(user))
-          return user
+        localStorage.setItem('user', JSON.stringify(user));
+        // return user})
+        })
+        .then(
+          user => {
+                    dispatch(success(user))
+          history.push('/')
+        // .then(user => {
+          // console.log(user)
+          // localStorage.setItem('user', JSON.stringify(user));
+          // dispatch(success(user))
+          // history.push('/');
+
+          // return user
         })
       .catch(error => dispatch(fail(error)));
   }
 }
 
-function logout() {
+export function logout() {
   localStorage.removeItem('user')
+  return { type: USERS_LOGOUT }
 }
+
+// ÷/
 // export function login(user) {
 //   const begin = user =>  ({ type: LOGIN_BEGIN, payload: { user } })
 //   const success = user => ({ type: LOGIN_SUCCESS })
