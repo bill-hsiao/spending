@@ -37,11 +37,11 @@ if (process.env.NODE_ENV === 'production') {
     try {
       console.log('hi')
       console.log(this, ctx.request, ctx.response)
-      await Send(ctx, './client/build/index.html');
+      await Send(ctx, './front/build/index.html');
     } catch(err) {
   //
     console.log(err)
-    await Send(ctx, './client/build/index.html');
+    await Send(ctx, './front/build/index.html');
 
       return next();
     }
