@@ -1,6 +1,6 @@
 require('dotenv').config()
 
-const app = require('./application')
+const app = require('./main')
 
 const port = process.env.PORT || 80
 
