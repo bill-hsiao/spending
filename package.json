@@ -10,8 +10,9 @@
   "version": "1.2.2",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon index",
-  "start": "node index"
+    "start": "node index.js",
+    "build": "ng build",
+    "heroku-postbuild": "ng build --prod" // this will be run on Heroku
   },
   "dependencies": {
     "@koa/cors": "^2.2.3",
