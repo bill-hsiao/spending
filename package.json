@@ -9,13 +9,11 @@
   "license": "MIT",
   "version": "1.2.2",
   "engines": {
-    "node": "9.2.0"
+    "node": "10.15.3"
   },
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "build": "ng build",
-    "heroku-postbuild": "ng build --prod"
+    "start": "node index.js"
   },
   "dependencies": {
     "@koa/cors": "^2.2.3",
