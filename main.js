@@ -17,7 +17,7 @@ const router = new Router()
 if (process.env.NODE_ENV === 'production') {
 
   app.use(Static(__dirname + '/front/build'))
-  router.get('*', async (ctx, next) => {
+  router.get('/*', async (ctx, next) => {
     try {
       console.log('hi')
       console.log(this, ctx.request, ctx.response)
