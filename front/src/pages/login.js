@@ -38,8 +38,10 @@ class Login extends React.Component {
             this.props.dispatch(login(user))
         }
     }
-
-
+//     componentDidMount(){
+//         const { myKey } = this.props.match.params
+//         console.log(myKey )
+// }
     render() {
         const { registering } = this.props
         const { user } = this.state

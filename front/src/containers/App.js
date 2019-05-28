@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { BrowserRouter as Router, Route } from 'react-router-dom'
+import { Router, Route } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { history } from '../bin/history'
 import { PrivateRoute } from '../components/privateRoute'
@@ -17,7 +17,9 @@ class App extends React.Component {
     const { dispatch } = this.props;
     history.listen((location, action) => {
         // clear alert on location change
-        history.go()
+        // history.go()
+console.log(action)
+console.log(location)
         console.log(history)
     });
 
@@ -29,8 +31,10 @@ class App extends React.Component {
   //         })
 
   // }
+
   render() {
-    const { history } = this.props;
+    // const { history } = this.props;
+    console.log(this.props)
     return (
     <div className="jumbotron">
         <div className="App">
@@ -49,6 +53,12 @@ class App extends React.Component {
     )
   }
 }
+// {/* <Route
+// path='/dashboard'
+// render={(props) => <Dashboard {...props} isAuthed={true} />}
+// />
+//           <Route path="/login" render={(props) => <Login {...props} router=}
+//  */}
 
 function mapStateToProps(state) {
   const { init } = state

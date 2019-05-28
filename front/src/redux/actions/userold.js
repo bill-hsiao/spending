@@ -37,7 +37,7 @@ export function signUp(user) {
   return async dispatch => {
     dispatch(begin(user))
     try {
-      const response = await fetch(`http://localhost:5000/users/register`, requestOptions).then(handleErrors)
+      const response = await fetch(`${window.location.origin}/users/register`, requestOptions).then(handleErrors)
       user = await response.json()
       dispatch(success())
       history.push('/login')
@@ -57,9 +57,12 @@ export function login(user) {
     body: JSON.stringify(user)
   }
   return async dispatch => {
+    // console.log(window.location)
+
     dispatch(begin(user));
     try {
-      const response = await fetch(`http://localhost:5000/users/authenticate`, requestOptions).then(handleErrors)
+      // console.log(Location.href)
+      const response = await fetch(`${window.location.origin}/users/authenticate`, requestOptions).then(handleErrors)
       user = await response.json()
       history.push('/')
       dispatch(success(await user))

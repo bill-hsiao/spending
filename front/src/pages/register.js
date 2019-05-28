@@ -37,6 +37,7 @@ class Register extends React.Component {
             this.props.dispatch(signUp(user))
         }
     }
+    
 
 
     render() {

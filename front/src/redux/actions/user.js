@@ -16,7 +16,7 @@ export const USERS_LOGOUT = 'USERS_LOGOUT'
 
 export function signUp(user) {
   const begin = () =>  ({ type: SIGNUP_BEGIN })
-  const success = () => ({ type: SIGNUP_SUCCESS })
+  const success = (user) => ({ type: SIGNUP_SUCCESS })
   const fail = () => ({ type: SIGNUP_FAIL })
   const requestOptions = {
     method: 'POST',
@@ -26,10 +26,16 @@ export function signUp(user) {
   return async dispatch => {
     dispatch(begin(user))
     try {
-      const response = await fetch(`http://localhost:5000/users/register`, requestOptions).then(handleErrors)
+      const response = await fetch(`${window.location.origin}/users/register`, requestOptions).then(handleErrors)
       user = await response.json()
-      dispatch(success())
-      history.push('/login')
+      if (user) {
+        dispatch(success())
+        history.push('/login')
+
+      }
+      // dispatch(success())
+      // console.log(dispatch)
+      // history.push('/login')
     } catch (error) {
       console.log(error)
       dispatch(fail())
@@ -48,12 +54,13 @@ export function login(user) {
   return async dispatch => {
     dispatch(begin(user));
     try {
-      const response = await fetch(`http://localhost:5000/users/authenticate`, requestOptions).then(handleErrors)
+      const response = await fetch(`${window.location.origin}/users/authenticate`, requestOptions).then(handleErrors)
       user = await response.json()
-      history.push('/')
       dispatch(success(await user))
       localStorage.setItem('user', JSON.stringify(await user));
-      return user
+      history.push('/')
+
+      // return user
     } catch (error) {
       console.log(error)
       dispatch(fail(error));
