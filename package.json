@@ -13,9 +13,7 @@
   },
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "build": "ng build",
-    "heroku-postbuild": "ng build --prod"
+    "start": "node index.js"
   },
   "dependencies": {
     "@koa/cors": "^2.2.3",
