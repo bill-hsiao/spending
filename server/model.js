@@ -11,9 +11,9 @@ const User = new Schema({
   expenses: [{ type: Schema.Types.ObjectId, ref: 'Expense' }]
 })
 
-const Expense = Schema({
+const Expense = new Schema({
   user: { type: Schema.Types.ObjectId, ref: 'User' },
-  month: String,
+  date: String,
   amount: Number,
   description: String
 });
@@ -38,5 +38,5 @@ User.pre('save', function(next) {
 
 module.exports = {
   User: mongoose.model('User', User),
-  // Expense: mongoose.model('Expense', Expense)
+  Expense: mongoose.model('Expense', Expense)
 }
