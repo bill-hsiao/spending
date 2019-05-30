@@ -1,4 +1,5 @@
 const user = require('./service')
+// const user = User()
 
 module.exports = {
   register,
@@ -51,9 +52,11 @@ async function authenticate(ctx, next) {
     // await next()
   } else {
     error = response
+    console.log(error)
     throw error
   }
   } catch (error) {
+    console.log(error.code)
     ctx.response.status = error.code
     console.log(error)
     // ctx.throw(error.code, error.message)

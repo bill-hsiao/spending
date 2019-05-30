@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 mongoose.Promise = global.Promise
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
-const {User} = require('./index')
+const { User, Expense } = require('./model')
 const { Response, Sign, Hash, Compare, QueryOne } = require('./helpers')
 const sign = Sign(jwt)
 const hash = Hash(bcrypt)
@@ -17,6 +17,39 @@ module.exports = {
   getAll
 }
 
+// module.exports = {
+//   user
+// }
+// function expense(param, id) {
+//   const user = User.
+//   return {
+//     create, 
+//     update, 
+//     delet
+//   }
+//   async function create() {
+
+//   }
+//   const expense = new Expense(param) 
+//   await expense.save
+// }
+
+// function user() {
+//   return {
+//     create, 
+//     authenticate,
+//     update, 
+//     del, 
+//     getById,
+//     getAll
+//   }
+// }
+
+// function expense() {
+//   return {
+    
+//   }
+// }
 async function create(param) {
   try {
       if (await queryOne({username: param.username})) {
@@ -62,7 +95,7 @@ async function authenticate(param) {
 
 async function update(param, id) {
   try {
-    const user = await User.findById(id);
+    const user = await queryOne({id: id});
     if (!user) throw 'User does not exist'
     const queriedUser = await User.findOne({ username: param.username })
     if (user.username !== param.username && queriedUser) throw 'username taken'

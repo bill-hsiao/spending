@@ -21,7 +21,7 @@ if (process.env.NODE_ENV === 'production') {
     try {
       console.log('hi')
       console.log(this, ctx.request, ctx.response)
-      await Send(ctx, './client/build/index.html');
+      await Send(ctx, './front/build/index.html');
     } catch(err) {
   //
     console.log(err)
@@ -29,6 +29,26 @@ if (process.env.NODE_ENV === 'production') {
     }
   })
 }
+
+// if (process.env.NODE_ENV === 'production') {
+//   //if app is in production, will serve index
+//   app.use(Static(__dirname + '/./front/build'))
+//   router.get('serveReact', '/', async(ctx, next) => {
+//     try {
+//         console.log(ctx.path)
+//         await Send(ctx, './front/build/index.html');
+//     } catch (err) {
+//         console.log(err)
+//         next(err)
+//     }
+//   })
+  // .get('/register', async(ctx, next) => {
+    // console.log('hi')
+    // await next()
+    // console.log(ctx)
+  // })
+  // .redirect('/*', 'serveReact')
+// }
 // app.use(async (ctx) => {
 //   if ('/' == ctx.path) return ctx.body = 'Try GET /package.json';
 //   await send(ctx, ctx.path);
@@ -99,7 +119,7 @@ app.use(BodyParser({
 
 app.use(Respond())
 
-require('./mongo/user')(router)
+require('./server/user')(router)
 app.use(router.routes())
 app.use(router.allowedMethods())
 
