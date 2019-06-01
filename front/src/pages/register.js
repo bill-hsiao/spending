@@ -50,7 +50,7 @@ class Register extends React.Component {
               <input type="text" name="firstName" value={user.firstName} placeholder="firstName" onChange={this.handleChange}/>
               <input type="text" name="lastName" value={user.lastName} placeholder="lastName" onChange={this.handleChange}/>
               <input type="text" name="username" value={user.username} placeholder="username" onChange={this.handleChange}/>
-              <input type="text" name="password" value={user.password} placeholder="password" onChange={this.handleChange}/>
+              <input type="password" name="password" value={user.password} placeholder="password" onChange={this.handleChange}/>
               <button type="submit">Register</button>
               <Link to="/Login">Cancel</Link>
               </form>

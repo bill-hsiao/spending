@@ -14,12 +14,12 @@ module.exports = {
 //done
 async function register(ctx, next) {
   const userParam = ctx.request.body
+  await next()
   try {
     const response = await user.create(userParam)
     if (response.type === 'OK') {
       ctx.response.body = response.body
       ctx.response.status = response.code
-      return next()
     } else {
       error = response
       throw error
@@ -32,6 +32,7 @@ async function register(ctx, next) {
 }
 //done
 async function authenticate(ctx, next) {
+  await next()
   const userParam = ctx.request.body
   console.log(ctx.request.body)
   try {

@@ -50,7 +50,7 @@ class Login extends React.Component {
           <h1>Login</h1>
           <form onSubmit={this.handleSubmit}>
               <input type="text" name="username" value={user.username} placeholder="username" onChange={this.handleChange}/>
-              <input type="text" name="password" value={user.password} placeholder="password" onChange={this.handleChange}/>
+              <input type="password" name="password" value={user.password} placeholder="password" onChange={this.handleChange}/>
               <button type="submit">Sign In</button>
               <Link to="/register">Register</Link>
               </form>
