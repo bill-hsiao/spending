@@ -33,7 +33,7 @@
     "koa-static": "^5.0.0",
     "koa2-history-api-fallback": "^0.1.0",
     "mongodb": "^3.2.6",
-    "mongoose": "^5.5.11",
+    "mongoose": "^5.7.5",
     "path-to-regexp": "^3.0.0"
   },
   "devDependencies": {
